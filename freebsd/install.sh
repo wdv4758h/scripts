@@ -15,6 +15,17 @@ install()
     MAKE_JOBS_NUMBER=8
     ' >> /etc/make.conf
 
+    # add taiwan ntp server
+    mv /etc/ntp.conf /etc/ntp.conf.bak
+    sed -e '12i\
+    server ntp.cs.nctu.edu.tw\
+    server ntp.nctu.edu.tw\
+    server time.stdtime.gov.tw\
+    server tick.stdtime.gov.tw\
+    server tock.stdtime.gov.tw\
+    server watch.stdtime.gov.tw\
+    server ntp.ntu.edu.tw' /etc/ntp.conf.bak > /etc/ntp.conf
+
     sed -i.bak 's/SERVERNAME=portsnap.FreeBSD/SERVERNAME=portsnap.tw.FreeBSD/' /etc/portsnap.conf
 
     portsnap fetch extract
