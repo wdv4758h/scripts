@@ -7,6 +7,7 @@
 
 install()
 {
+    # add master site
     echo 'MASTER_SITE_BACKUP?=    \
             http://freebsd.cs.nctu.edu.tw/distfiles/${DIST_SUBDIR}/
     MASTER_SITE_OVERRIDE?= ${MASTER_SITE_BACKUP}
@@ -17,6 +18,7 @@ install()
 
     # add taiwan ntp server
     mv /etc/ntp.conf /etc/ntp.conf.bak
+
     sed -e '12i\
     server ntp.cs.nctu.edu.tw\
     server ntp.nctu.edu.tw\
@@ -26,6 +28,12 @@ install()
     server watch.stdtime.gov.tw\
     server ntp.ntu.edu.tw' /etc/ntp.conf.bak > /etc/ntp.conf
 
+    echo 'ntpd_enable="YES"
+    ntpd_sync_on_start="YES"' >> /etc/rc.conf
+
+    /etc/rc.d/ntpd start
+
+    # add taiwan's portsnap site (at NCTU)
     sed -i.bak 's/SERVERNAME=portsnap.FreeBSD/SERVERNAME=portsnap.tw.FreeBSD/' /etc/portsnap.conf
 
     portsnap fetch extract
