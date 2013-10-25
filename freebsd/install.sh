@@ -1,9 +1,12 @@
 #!/bin/sh
 
+# As you are using this script, you shouldn't have sudo now
+# So, to run this script as root use su or login as root
+# To use su to run only a command (this default directory is root's home directory) :
+#   su - root -c 'sh /path/to/script'
+
 install()
 {
-    su
-
     echo 'MASTER_SITE_BACKUP?=    \
             http://freebsd.cs.nctu.edu.tw/distfiles/${DIST_SUBDIR}/
     MASTER_SITE_OVERRIDE?= ${MASTER_SITE_BACKUP}
@@ -17,13 +20,12 @@ install()
     portsnap fetch extract
 
     cd /usr/ports/security/sudo/
-    make install clean
+    make BATCH=yes install clean
 
     sed -i.bak 's/^# %wheel ALL=(ALL) ALL$/%wheel ALL=(ALL) ALL/' /usr/local/etc/sudoers
 
     cd /usr/ports/ports-mgmt/portmaster/
-    make install clean
-
+    make BATCH=yes install clean
 }
 
 soft_install()
